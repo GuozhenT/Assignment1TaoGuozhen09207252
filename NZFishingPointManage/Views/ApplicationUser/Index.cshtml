@@ -1,0 +1,27 @@
+﻿@model List<NZFishingPointManage.Models.Domain.ApplicationUser>
+@{
+}
+
+<h1>ApplicationUsers</h1>
+<table class="table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+       
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var applicationUser in Model)
+    {
+        <tr>
+                <td>@applicationUser.Id</td>
+                <td>@applicationUser.Name</td>
+                <td>@applicationUser.Email</td>
+            
+        </tr>
+
+    }
+    </tbody>
+</table>

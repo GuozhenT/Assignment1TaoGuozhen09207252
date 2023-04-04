@@ -1,0 +1,28 @@
+﻿@model NZFishingPointManage.Models.UpdateFishingPointViewModel
+@{
+}
+
+<h1>Edit Fishing Point</h1>
+<form method="post" action="View" class="mt-5">
+    <div class="mb-3">
+        <label for="" class="form-label">Id</label>
+        <input type="text" class="form-control" asp-for="Id" readonly>
+    </div>
+    <div class="mb-3">
+        <label for="" class="form-label">Name</label>
+        <input type="text" class="form-control" asp-for="Name">
+    </div>
+    <div class="mb-3">
+        <label for="" class="form-label">Address</label>
+        <input type="text" class="form-control" asp-for="Address">
+    </div>
+    <div class="mb-3">
+        <label for="" class="form-label">PhoneNumber</label>
+        <input type="text" class="form-control" asp-for="PhoneNumber">
+    </div>
+    @if (User.IsInRole("Admin"))
+    {
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-danger" asp-action="Delete">Delete</button>
+    }
+</form>

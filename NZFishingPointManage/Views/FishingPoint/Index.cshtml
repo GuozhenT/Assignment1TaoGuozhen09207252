@@ -1,0 +1,35 @@
+﻿@model List<NZFishingPointManage.Models.Domain.FishingPoint>
+@{
+}
+
+<h1>Fishing Points</h1>
+@if (User.IsInRole("Admin"))
+{
+    <form asp-action="Add" asp-controller="FishingPoint" method="get" class="mt-5">
+        <button type="submit" class="btn btn-primary">Add Fishing Point</button>
+    </form>
+}
+<table class="table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Address</th>
+        <th>Phone</th>
+            <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var fishingPoint in Model)
+    {
+        <tr>
+            <td>@fishingPoint.Id</td>
+            <td>@fishingPoint.Name</td>
+            <td>@fishingPoint.Address</td>
+            <td>@fishingPoint.PhoneNumber</td>
+            <td><a href="FishingPoint/View/@fishingPoint.Id">View</a></td>
+        </tr>
+
+    }
+    </tbody>
+</table>
