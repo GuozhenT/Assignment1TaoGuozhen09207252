@@ -1,66 +1,69 @@
-﻿namespace NZFishingPointManage.Services
+﻿namespace NZFishingPointManage.Services;
+
+public class FileService : IFileService
 {
-    public class FileService : IFileService
+    private readonly IWebHostEnvironment environment;
+
+    public FileService(IWebHostEnvironment env)
     {
-        IWebHostEnvironment environment;
+        environment = env;
+    }
 
-        public FileService(IWebHostEnvironment env)
+    /*
+     *Generic method for saving images
+     */
+    public Tuple<int, string> SaveImage(IFormFile imageFile)
+    {
+        try
         {
-            environment = env;
+            var wwwPath = environment.WebRootPath;
+            var path = Path.Combine(wwwPath, "Uploads");
+            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+
+            // Check the allowed extenstions
+            var ext = Path.GetExtension(imageFile.FileName);
+            var allowedExtensions = new[] { ".jpg", ".png", ".jpeg" };
+            if (!allowedExtensions.Contains(ext))
+            {
+                var msg = string.Format("Only {0} extensions are allowed", string.Join(",", allowedExtensions));
+                return new Tuple<int, string>(0, msg);
+            }
+
+            var uniqueString = Guid.NewGuid().ToString();
+            var newFileName = uniqueString + ext;
+            var fileWithPath = Path.Combine(path, newFileName);
+            var stream = new FileStream(fileWithPath, FileMode.Create);
+            imageFile.CopyTo(stream);
+            stream.Close();
+            return new Tuple<int, string>(1, newFileName);
+            ;
         }
-
-
-        public Tuple<int, string> SaveImage(IFormFile imageFile)
+        catch (Exception ex)
         {
-            try
-            {
-                var wwwPath = this.environment.WebRootPath;
-                var path = Path.Combine(wwwPath, "Uploads");
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
-
-                // Check the allowed extenstions
-                var ext = Path.GetExtension(imageFile.FileName);
-                var allowedExtensions = new string[] { ".jpg", ".png", ".jpeg" };
-                if (!allowedExtensions.Contains(ext))
-                {
-                    string msg = string.Format("Only {0} extensions are allowed", string.Join(",", allowedExtensions));
-                    return new Tuple<int, string>(0, msg);
-                }
-                string uniqueString = Guid.NewGuid().ToString();
-                var newFileName = uniqueString + ext;
-                var fileWithPath = Path.Combine(path, newFileName);
-                var stream = new FileStream(fileWithPath, FileMode.Create);
-                imageFile.CopyTo(stream);
-                stream.Close();
-                return new Tuple<int, string>(1, newFileName);
-                ;
-            }
-            catch (Exception ex)
-            {
-                return new Tuple<int, string>(0, "Error has occured");
-            }
+            return new Tuple<int, string>(0, "Error has occured");
         }
+    }
 
-        public bool DeleteImage(string imageFileName)
+    /*
+     *  Generic method for deleting images
+     */
+    public bool DeleteImage(string imageFileName)
+    {
+        try
         {
-            try
+            var wwwPath = environment.WebRootPath;
+            var path = Path.Combine(wwwPath, "Uploads\\", imageFileName);
+            if (File.Exists(path))
             {
-                var wwwPath = this.environment.WebRootPath;
-                var path = Path.Combine(wwwPath, "Uploads\\", imageFileName);
-                if (System.IO.File.Exists(path))
-                {
-                    System.IO.File.Delete(path);
-                    return true;
-                }
-                return false;
+                File.Delete(path);
+                return true;
             }
-            catch (Exception ex)
-            {
-                return false;
-            }
+
+            return false;
+        }
+        catch (Exception ex)
+        {
+            return false;
         }
     }
 }
